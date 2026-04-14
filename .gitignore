@@ -1,0 +1,34 @@
+# Build folders (CMake / Make)
+**/build/
+**/cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+CMakeFiles/
+
+# Compiled binaries and objects
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Dependency and debug files
+*.d
+
+# Logs and runtime output
+*.log
+**/logs/*.log
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

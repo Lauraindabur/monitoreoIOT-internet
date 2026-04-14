@@ -133,7 +133,7 @@ void handleClient(int clientFd, sockaddr_storage clientAddr, ServerState& state,
     ClientSession session{clientFd, clientIp, clientPort, false, false, ""};
 
     timeval readTimeout{};
-    readTimeout.tv_sec = 30;
+    readTimeout.tv_sec = 90;
     readTimeout.tv_usec = 0;
     setsockopt(clientFd, SOL_SOCKET, SO_RCVTIMEO, &readTimeout, sizeof(readTimeout));
 
