@@ -2,14 +2,13 @@
 **/build/
 **/cmake-build-*/
 
-# CMake generated files
+# CMake generated files (server part)
 CMakeCache.txt
 cmake_install.cmake
 Makefile
 compile_commands.json
 CMakeFiles/
 
-# Compiled binaries and objects
 *.o
 *.obj
 *.a
