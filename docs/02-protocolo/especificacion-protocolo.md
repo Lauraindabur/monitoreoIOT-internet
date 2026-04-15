@@ -85,7 +85,7 @@ SP             = " " ;
 ## 7. Heartbeat y timeout
 - Comando de heartbeat: PING
 - Respuesta del servidor: OK PONG
-- Timeout de inactividad recomendado: 30 segundos
+- Timeout de inactividad implementado: 30 segundos
 - Si el cliente supera timeout, el servidor debe cerrar la conexion y registrar evento de timeout.
 
 ## 8. Comandos y respuestas
@@ -105,6 +105,7 @@ Errores:
 - ERROR 400 BAD_REQUEST
 - ERROR 409 ALREADY_EXISTS
 - ERROR 409 ALREADY_REGISTERED
+- ERROR 409 SENSOR_TYPE_MISMATCH
 - ERROR 422 INVALID_SENSOR_TYPE
 
 ### 8.3 REGISTER OPERATOR
@@ -167,6 +168,7 @@ Formato:
 - 404 NO_DATA: no hay mediciones para el sensor
 - 409 ALREADY_EXISTS: entidad ya registrada
 - 409 ALREADY_REGISTERED: la conexion ya habia ejecutado REGISTER
+- 409 SENSOR_TYPE_MISMATCH: el sensor_id ya existe con un tipo de sensor diferente
 - 422 INVALID_SENSOR_TYPE: tipo de sensor no permitido
 - 500 INTERNAL_ERROR: error interno no recuperable para la solicitud
 
