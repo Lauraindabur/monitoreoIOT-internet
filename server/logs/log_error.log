@@ -1,0 +1,12 @@
+[2026-04-14 22:43:35] [INFO] Servidor iniciado en puerto 9000
+[2026-04-14 22:43:48] [INFO] Cliente conectado ip=127.0.0.1 puerto=40150
+[2026-04-14 22:43:57] [INFO] REQ ip=127.0.0.1 puerto=40150 msg="REGISTER SENSOR xx temperatura"
+[2026-04-14 22:43:57] [INFO] RES ip=127.0.0.1 puerto=40150 msg="ERROR 400 INVALID_ID"
+[2026-04-14 22:44:05] [INFO] REQ ip=127.0.0.1 puerto=40150 msg="DATA temp_99 abc"
+[2026-04-14 22:44:05] [INFO] RES ip=127.0.0.1 puerto=40150 msg="ERROR 403 NOT_REGISTERED"
+[2026-04-14 22:44:15] [INFO] REQ ip=127.0.0.1 puerto=40150 msg="GET_LAST"
+[2026-04-14 22:44:15] [INFO] RES ip=127.0.0.1 puerto=40150 msg="ERROR 400 BAD_REQUEST"
+[2026-04-14 22:44:22] [INFO] REQ ip=127.0.0.1 puerto=40150 msg="HOLA_COMO_VAS"
+[2026-04-14 22:44:22] [INFO] RES ip=127.0.0.1 puerto=40150 msg="ERROR 400 UNKNOWN_COMMAND"
+[2026-04-14 22:44:26] [INFO] Cliente desconectado ip=127.0.0.1 puerto=40150 rol=anonimo
+[2026-04-14 22:44:30] [INFO] Servidor detenido de forma controlada

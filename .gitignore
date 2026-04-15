@@ -25,6 +25,9 @@ CMakeFiles/
 # Logs and runtime output
 *.log
 **/logs/*.log
+!server/logs/log_desconexion.log
+!server/logs/log_error.log
+!server/logs/log_normal.log
 
 # Editor / OS files
 .vscode/
