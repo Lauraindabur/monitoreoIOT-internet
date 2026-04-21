@@ -1,0 +1,10 @@
+[2026-04-14 22:41:02] [INFO] Servidor iniciado en puerto 9000
+[2026-04-14 22:41:31] [INFO] Cliente conectado ip=127.0.0.1 puerto=55624
+[2026-04-14 22:41:43] [INFO] REQ ip=127.0.0.1 puerto=55624 msg="REGISTER SENSOR temp_01 temperatura"
+[2026-04-14 22:41:43] [INFO] RES ip=127.0.0.1 puerto=55624 msg="OK REGISTERED SENSOR temp_01"
+[2026-04-14 22:41:53] [INFO] REQ ip=127.0.0.1 puerto=55624 msg="DATA temp_01 25"
+[2026-04-14 22:41:53] [INFO] RES ip=127.0.0.1 puerto=55624 msg="OK DATA_RECEIVED temp_01"
+[2026-04-14 22:42:02] [INFO] REQ ip=127.0.0.1 puerto=55624 msg="GET_LAST temp_01"
+[2026-04-14 22:42:02] [INFO] RES ip=127.0.0.1 puerto=55624 msg="LAST temp_01 25 2026-04-14T22:41:53"
+[2026-04-14 22:42:07] [INFO] Cliente desconectado ip=127.0.0.1 puerto=55624 rol=sensor:temp_01
+[2026-04-14 22:42:08] [INFO] Servidor detenido de forma controlada

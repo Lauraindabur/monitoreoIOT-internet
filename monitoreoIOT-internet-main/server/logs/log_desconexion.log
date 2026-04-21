@@ -1,0 +1,7 @@
+[2026-04-14 22:45:39] [INFO] Servidor iniciado en puerto 9000
+[2026-04-14 22:45:55] [INFO] Cliente conectado ip=127.0.0.1 puerto=34100
+[2026-04-14 22:45:58] [INFO] REQ ip=127.0.0.1 puerto=34100 msg="PING"
+[2026-04-14 22:45:58] [INFO] RES ip=127.0.0.1 puerto=34100 msg="OK PONG"
+[2026-04-14 22:46:29] [INFO] Timeout de inactividad ip=127.0.0.1 puerto=34100
+[2026-04-14 22:46:29] [INFO] Cliente desconectado ip=127.0.0.1 puerto=34100 rol=anonimo
+[2026-04-14 22:46:52] [INFO] Servidor detenido de forma controlada
