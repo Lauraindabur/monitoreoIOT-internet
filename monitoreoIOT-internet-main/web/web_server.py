@@ -476,7 +476,7 @@ def _html_base(title: str, content: str, session: dict | None = None) -> str:
 </head>
 <body>
     <nav class="navbar">
-        <span class="navbar-brand">🌐 Sistema IoT — Monitor de Sensores</span>
+        <span class="navbar-brand"> Sistema IoT — Monitor de Sensores</span>
         <div>{nav_user}</div>
     </nav>
     <div class="container">
@@ -545,7 +545,7 @@ def _render_dashboard(sensors: list[dict], session: dict) -> str:
 
     content = f"""
         <div class="card">
-            <h2>📊 Estado del sistema</h2>
+            <h2> Estado del sistema</h2>
             <div class="stat-grid">{stat_cards}</div>
             <p style="color:#888;font-size:0.8rem;margin-top:1rem">
                 Ultima actualizacion: {now}
@@ -585,7 +585,7 @@ def _render_login(error_msg: str = "", info_msg: str = "") -> str:
     content = f"""
         <div class="login-container">
             <div class="login-card">
-                <h1>🔒 Iniciar sesion</h1>
+                <h1> Iniciar sesion</h1>
                 {info_html}
                 {error_html}
                 <form method="POST" action="/login">
