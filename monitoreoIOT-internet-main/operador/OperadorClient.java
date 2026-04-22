@@ -483,7 +483,10 @@ public class OperadorClient extends JFrame {
 
         JLabel titleLabel = new JLabel("Acciones (comandos directos al servidor)");
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 15f));
-        panel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel topSection = new JPanel(new BorderLayout(8, 8));
+        topSection.setOpaque(false);
+        topSection.add(titleLabel, BorderLayout.NORTH);
 
         JPanel controls = new JPanel(new GridBagLayout());
         controls.setOpaque(false);
@@ -497,34 +500,44 @@ public class OperadorClient extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         controls.add(new JLabel("sensor_id (para GET_LAST):"), withGrid(gbc, 0, 0, 1, 0));
-        actionSensorIdField = new JTextField("", 18);
+        actionSensorIdField = new JTextField("", 22);
         actionSensorIdField.setToolTipText("Ej: temp_01 (si esta vacio se usa el sensor seleccionado en la tabla)");
-        controls.add(actionSensorIdField, withGrid(gbc, 1, 0, 2, 1));
+        controls.add(actionSensorIdField, withGrid(gbc, 1, 0, 1, 1));
+
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        buttonRow.setOpaque(false);
 
         actionGetSensorsButton = new JButton("GET_SENSORS");
+        actionGetSensorsButton.setPreferredSize(new Dimension(140, 30));
         actionGetSensorsButton.setToolTipText("Lista sensores activos (respuesta SENSORS ...)");
         actionGetSensorsButton.addActionListener(e -> runActionCommandAsync("GET_SENSORS"));
-        controls.add(actionGetSensorsButton, withGrid(gbc, 0, 1, 1, 0));
+        buttonRow.add(actionGetSensorsButton);
 
         actionPingButton = new JButton("PING");
+        actionPingButton.setPreferredSize(new Dimension(100, 30));
         actionPingButton.setToolTipText("Heartbeat manual (respuesta OK PONG)");
         actionPingButton.addActionListener(e -> runActionCommandAsync("PING"));
-        controls.add(actionPingButton, withGrid(gbc, 1, 1, 1, 0));
+        buttonRow.add(actionPingButton);
 
         actionGetLastButton = new JButton("GET_LAST");
+        actionGetLastButton.setPreferredSize(new Dimension(140, 30));
         actionGetLastButton.setToolTipText("Consulta la ultima medicion (respuesta LAST ... o ERROR ...)");
         actionGetLastButton.addActionListener(e -> onActionGetLastClicked());
-        controls.add(actionGetLastButton, withGrid(gbc, 2, 1, 1, 0));
+        buttonRow.add(actionGetLastButton);
+
+        controls.add(buttonRow, withGrid(gbc, 0, 1, 2, 1));
 
         JLabel hint = new JLabel(
-                "<html><body style='width:700px'>"
+                "<html><body style='width:720px'>"
                         + "Esta zona permite validar directamente el protocolo desde la GUI. "
-                        + "Cada comando se ejecuta en background y se muestra la respuesta textual del servidor."
+                        + "Puedes enviar GET_SENSORS, PING y GET_LAST &lt;sensor_id&gt;; "
+                        + "la respuesta textual del servidor queda registrada abajo."
                         + "</body></html>");
         hint.setForeground(Color.DARK_GRAY);
-        controls.add(hint, withGrid(gbc, 0, 2, 3, 1));
+        controls.add(hint, withGrid(gbc, 0, 2, 2, 1));
 
-        panel.add(controls, BorderLayout.CENTER);
+        topSection.add(controls, BorderLayout.CENTER);
+        panel.add(topSection, BorderLayout.NORTH);
 
         actionHistoryTableModel = new DefaultTableModel(
                 new String[]{"Hora local", "Comando", "Respuesta del servidor"}, 0) {
@@ -556,7 +569,7 @@ public class OperadorClient extends JFrame {
         footer.add(clearHistory);
         historyPanel.add(footer, BorderLayout.SOUTH);
 
-        panel.add(historyPanel, BorderLayout.SOUTH);
+        panel.add(historyPanel, BorderLayout.CENTER);
         return panel;
     }
 

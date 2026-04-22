@@ -237,15 +237,18 @@ class WebHandler(BaseHTTPRequestHandler):
         elif path.startswith("/static/"):
             self._handle_static(path)
         else:
-            self._send_html(
-                404,
-                render_message_page(
-                    "Ruta no encontrada",
-                    "Pagina no encontrada",
-                    "La ruta solicitada no existe en el servidor web del sistema IoT.",
+            if path.startswith("/api/"):
+                self._send_json(404, {"error": "Ruta API no encontrada"})
+            else:
+                self._send_html(
                     404,
-                ),
-            )
+                    render_message_page(
+                        "Ruta no encontrada",
+                        "Pagina no encontrada",
+                        "La ruta solicitada no existe en el servidor web del sistema IoT.",
+                        404,
+                    ),
+                )
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
@@ -260,15 +263,18 @@ class WebHandler(BaseHTTPRequestHandler):
         elif path == "/api/commands":
             self._handle_api_commands()
         else:
-            self._send_html(
-                405,
-                render_message_page(
-                    "Metodo no permitido",
-                    "Metodo no permitido",
-                    "La ruta existe, pero no soporta este metodo HTTP.",
+            if path.startswith("/api/"):
+                self._send_json(405, {"error": "Metodo no permitido"})
+            else:
+                self._send_html(
                     405,
-                ),
-            )
+                    render_message_page(
+                        "Metodo no permitido",
+                        "Metodo no permitido",
+                        "La ruta existe, pero no soporta este metodo HTTP.",
+                        405,
+                    ),
+                )
 
     def log_message(self, format: str, *args) -> None:
         _log("INFO", f"HTTP {self.address_string()} - {format % args}")

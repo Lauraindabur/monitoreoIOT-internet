@@ -100,11 +100,13 @@ if (dashboardRoot) {
             window.location.assign("/login");
             return;
         }
+        const payload = await safeReadJson(response);
         if (!response.ok) {
-            throw new Error(`No fue posible ejecutar la accion (${response.status})`);
+            const msg = payload?.error || payload?.message || `No fue posible ejecutar la accion (${response.status})`;
+            throw new Error(msg);
         }
 
-        state.snapshot = await response.json();
+        state.snapshot = payload;
         syncSelectedSensor();
         render();
     }
@@ -119,11 +121,13 @@ if (dashboardRoot) {
                 window.location.assign("/login");
                 return;
             }
+            const payload = await safeReadJson(response);
             if (!response.ok) {
-                throw new Error(`Respuesta inesperada del dashboard (${response.status})`);
+                const msg = payload?.error || payload?.message || `Respuesta inesperada del dashboard (${response.status})`;
+                throw new Error(msg);
             }
 
-            state.snapshot = await response.json();
+            state.snapshot = payload;
             syncSelectedSensor();
             render();
         } catch (error) {
@@ -191,21 +195,21 @@ if (dashboardRoot) {
                 window.location.assign("/login");
                 return;
             }
-            const data = await response.json();
+            const data = await safeReadJson(response);
             if (!response.ok) {
                 appendConsoleLine({
                     direction: "RX",
-                    text: `ERROR ${data.error || response.status}`,
+                    text: `ERROR ${data?.error || data?.message || response.status}`,
                     meta: "Fallo HTTP",
                 });
                 return;
             }
 
-            const item = data.transcript?.[0];
+            const item = data?.transcript?.[0];
             appendConsoleLine({
                 direction: "RX",
                 text: item?.response || "(sin respuesta)",
-                meta: `IoT ${data.iot_host}:${data.iot_port}`,
+                meta: `IoT ${data?.iot_host || "?"}:${data?.iot_port || "?"}`,
             });
         } catch (error) {
             appendConsoleLine({
@@ -214,6 +218,23 @@ if (dashboardRoot) {
                 meta: "Excepcion",
             });
         }
+    }
+
+    async function safeReadJson(response) {
+        const contentType = response.headers.get("content-type") || "";
+        const rawText = await response.text();
+
+        if (contentType.includes("application/json")) {
+            try {
+                return JSON.parse(rawText);
+            } catch {
+                return { error: "JSON invalido recibido", raw: rawText.slice(0, 300) };
+            }
+        }
+
+        // Si el backend devolvio HTML (por ejemplo, pagina de error), mostramos un extracto.
+        const snippet = rawText.replaceAll(/\s+/g, " ").trim().slice(0, 220);
+        return { error: "Respuesta no JSON (HTML u otro formato)", raw: snippet };
     }
 
     function appendConsoleLine({ direction, text, meta }) {
