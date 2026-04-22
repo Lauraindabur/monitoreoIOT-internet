@@ -4,7 +4,7 @@ Este directorio muestra la documentacion tecnica y funcional del proyecto de mon
 
 ## Enlaces actuales
 
-- Enlace del repositorio:
+- Enlace del repositorio: https://github.com/Lauraindabur/monitoreoIOT-internet/tree/main/monitoreoIOT-internet-main
 - Resumen del proyecto: [01-proyecto/resumen.md](01-proyecto/resumen.md)
 - Documentación del protocolo: [02-protocolo/especificacion-protocolo.md](02-protocolo/especificacion-protocolo.md)
 - Instrucciones para el despliegue en AWS: [03-despliegue/despliegue.md](06-despliegue/despliegue.md)
