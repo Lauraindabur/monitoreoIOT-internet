@@ -185,7 +185,7 @@ Si el servidor IoT no está disponible, `get_sensors()` captura la excepción, l
 ### 4.6 Resolución de nombres
 
 ```python
-# ✅ DNS — no hay IPs en el código fuente
+#  DNS — no hay IPs en el código fuente
 socket.getaddrinfo(hostname, port, family=socket.AF_UNSPEC, type=socket.SOCK_STREAM)
 ```
 
@@ -246,7 +246,7 @@ Para el despliegue en la instancia EC2, los siguientes puertos deben estar abier
 | 8080 | TCP | Servidor Web | Todos (0.0.0.0/0) |
 | 8081 | TCP | Servicio de Auth | Solo localhost (127.0.0.1) |
 
-> ⚠️ El servicio de autenticación (8081) no debe ser accesible desde Internet. Solo el servidor web lo consulta internamente.
+>  El servicio de autenticación (8081) no debe ser accesible desde Internet. Solo el servidor web lo consulta internamente.
 
 ---
 
@@ -281,15 +281,15 @@ Internet
 
 | Requisito | Componente | Cumplido |
 |-----------|------------|---------|
-| Cliente operador con GUI | `OperadorClient.java` (Swing) | ✅ |
-| Al menos 2 lenguajes (Java + otro) | Java + Python (ya cuentan C++ y Python de sensores) | ✅ |
-| Ver sensores activos | GET_SENSORS en Java y web | ✅ |
-| Recibir alertas en tiempo real | Hilo lector Java detecta ALERT push | ✅ |
-| Consultar mediciones | GET_LAST en Java y web | ✅ |
-| Servidor HTTP básico | `web_server.py` desde cero (stdlib) | ✅ |
-| Interpretar cabeceras HTTP | Content-Length, Content-Type, Cookie | ✅ |
-| Manejar GET | GET /, /login, /api/sensors, /api/status | ✅ |
-| Códigos de estado HTTP | 200, 302, 400, 401, 404 | ✅ |
+| Cliente operador con GUI | `OperadorClient.java` (Swing) | check |
+| Al menos 2 lenguajes (Java + otro) | Java + Python (ya cuentan C++ y Python de sensores) | check |
+| Ver sensores activos | GET_SENSORS en Java y web | check |
+| Recibir alertas en tiempo real | Hilo lector Java detecta ALERT push | check |
+| Consultar mediciones | GET_LAST en Java y web | check |
+| Servidor HTTP básico | `web_server.py` desde cero (stdlib) | check |
+| Interpretar cabeceras HTTP | Content-Length, Content-Type, Cookie | check |
+| Manejar GET | GET /, /login, /api/sensors, /api/status | check |
+| Códigos de estado HTTP | 200, 302, 400, 401, 404 | check |
 | Servicio externo de autenticación | `auth_service.py` separado | ✅ |
 | Usuarios NO en el servidor IoT | auth_service.py es proceso independiente | ✅ |
 | Sin IPs hardcodeadas | DNS via `InetAddress` (Java) y `getaddrinfo` (Python) | ✅ |
