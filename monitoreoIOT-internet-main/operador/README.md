@@ -63,7 +63,7 @@ La ventana esta organizada en cuatro zonas:
 - `Conexion al servidor`: host, puerto, ID del operador y boton conectar/desconectar.
 - `Resumen superior`: tarjetas con sensores activos, mediciones recientes, alertas y modo de supervision.
 - `Sensores activos y supervision`: tabla principal, detalle del sensor seleccionado y botones de accion.
-- `Mediciones / Alertas / Log`: historial reciente, eventos push del servidor y bitacora de sesion.
+- `Mediciones / Acciones / Alertas / Log`: historial reciente, consola de comandos al servidor, eventos push del servidor y bitacora de sesion.
 
 ## Acciones de supervision incluidas
 

@@ -85,6 +85,7 @@ public class OperadorClient extends JFrame {
     private volatile boolean connected = false;
     private volatile boolean refreshRunning = false;
     private volatile boolean singleQueryRunning = false;
+    private volatile boolean actionCommandRunning = false;
     private volatile boolean superviseAllSensors = false;
 
     private volatile Thread readerThread;
@@ -111,6 +112,10 @@ public class OperadorClient extends JFrame {
     private JButton toggleGlobalSupervisionButton;
     private JButton clearHistoryButton;
     private JButton clearAlertsButton;
+    private JButton actionGetSensorsButton;
+    private JButton actionPingButton;
+    private JButton actionGetLastButton;
+    private JTextField actionSensorIdField;
 
     private JTable sensorsTable;
     private DefaultTableModel sensorsTableModel;
@@ -118,6 +123,8 @@ public class OperadorClient extends JFrame {
     private DefaultTableModel measurementsTableModel;
     private JTable alertsTable;
     private DefaultTableModel alertsTableModel;
+    private JTable actionHistoryTable;
+    private DefaultTableModel actionHistoryTableModel;
     private JTextArea logArea;
 
     private JLabel statusLabel;
@@ -463,9 +470,94 @@ public class OperadorClient extends JFrame {
 
     private JTabbedPane buildBottomTabs() {
         JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Acciones", buildActionsPanel());
         tabs.addTab("Alertas", buildAlertsPanel());
         tabs.addTab("Log de sesion", buildLogPanel());
         return tabs;
+    }
+
+    private JPanel buildActionsPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+        JLabel titleLabel = new JLabel("Acciones (comandos directos al servidor)");
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 15f));
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel controls = new JPanel(new GridBagLayout());
+        controls.setOpaque(false);
+        controls.setBorder(new CompoundBorder(
+                new LineBorder(CARD_BORDER),
+                new EmptyBorder(10, 10, 10, 10)));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        controls.add(new JLabel("sensor_id (para GET_LAST):"), withGrid(gbc, 0, 0, 1, 0));
+        actionSensorIdField = new JTextField("", 18);
+        actionSensorIdField.setToolTipText("Ej: temp_01 (si esta vacio se usa el sensor seleccionado en la tabla)");
+        controls.add(actionSensorIdField, withGrid(gbc, 1, 0, 2, 1));
+
+        actionGetSensorsButton = new JButton("GET_SENSORS");
+        actionGetSensorsButton.setToolTipText("Lista sensores activos (respuesta SENSORS ...)");
+        actionGetSensorsButton.addActionListener(e -> runActionCommandAsync("GET_SENSORS"));
+        controls.add(actionGetSensorsButton, withGrid(gbc, 0, 1, 1, 0));
+
+        actionPingButton = new JButton("PING");
+        actionPingButton.setToolTipText("Heartbeat manual (respuesta OK PONG)");
+        actionPingButton.addActionListener(e -> runActionCommandAsync("PING"));
+        controls.add(actionPingButton, withGrid(gbc, 1, 1, 1, 0));
+
+        actionGetLastButton = new JButton("GET_LAST");
+        actionGetLastButton.setToolTipText("Consulta la ultima medicion (respuesta LAST ... o ERROR ...)");
+        actionGetLastButton.addActionListener(e -> onActionGetLastClicked());
+        controls.add(actionGetLastButton, withGrid(gbc, 2, 1, 1, 0));
+
+        JLabel hint = new JLabel(
+                "<html><body style='width:700px'>"
+                        + "Esta zona permite validar directamente el protocolo desde la GUI. "
+                        + "Cada comando se ejecuta en background y se muestra la respuesta textual del servidor."
+                        + "</body></html>");
+        hint.setForeground(Color.DARK_GRAY);
+        controls.add(hint, withGrid(gbc, 0, 2, 3, 1));
+
+        panel.add(controls, BorderLayout.CENTER);
+
+        actionHistoryTableModel = new DefaultTableModel(
+                new String[]{"Hora local", "Comando", "Respuesta del servidor"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        actionHistoryTable = new JTable(actionHistoryTableModel);
+        actionHistoryTable.setAutoCreateRowSorter(true);
+        actionHistoryTable.setRowHeight(23);
+        actionHistoryTable.getTableHeader().setReorderingAllowed(false);
+        actionHistoryTable.getColumnModel().getColumn(0).setPreferredWidth(140);
+        actionHistoryTable.getColumnModel().getColumn(1).setPreferredWidth(140);
+        actionHistoryTable.getColumnModel().getColumn(2).setPreferredWidth(520);
+
+        JPanel historyPanel = new JPanel(new BorderLayout(6, 6));
+        historyPanel.setOpaque(false);
+        historyPanel.setBorder(BorderFactory.createTitledBorder("Historial de acciones"));
+        historyPanel.add(new JScrollPane(actionHistoryTable), BorderLayout.CENTER);
+
+        JButton clearHistory = new JButton("Limpiar historial de acciones");
+        clearHistory.addActionListener(e -> {
+            actionHistoryTableModel.setRowCount(0);
+            updateActionButtons();
+        });
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 2));
+        footer.setOpaque(false);
+        footer.add(clearHistory);
+        historyPanel.add(footer, BorderLayout.SOUTH);
+
+        panel.add(historyPanel, BorderLayout.SOUTH);
+        return panel;
     }
 
     private JPanel buildAlertsPanel() {
@@ -1114,6 +1206,60 @@ public class OperadorClient extends JFrame {
         queryThread.start();
     }
 
+    private void onActionGetLastClicked() {
+        if (!connected) {
+            return;
+        }
+
+        String sensorId = actionSensorIdField == null ? "" : safeText(actionSensorIdField.getText()).trim();
+        if (sensorId.isEmpty()) {
+            sensorId = getSelectedSensorId();
+        }
+        if (sensorId == null || sensorId.isEmpty()) {
+            showError("Indique un sensor_id en el campo o seleccione un sensor en la tabla.");
+            return;
+        }
+        if (!sensorId.matches("[a-zA-Z0-9_-]{3,32}")) {
+            showError("sensor_id invalido. Formato permitido: [a-zA-Z0-9_-]{3,32}");
+            return;
+        }
+
+        runActionCommandAsync("GET_LAST " + sensorId);
+    }
+
+    private void runActionCommandAsync(String command) {
+        if (!connected || actionCommandRunning) {
+            return;
+        }
+
+        actionCommandRunning = true;
+        SwingUtilities.invokeLater(this::updateActionButtons);
+
+        Thread actionThread = new Thread(() -> {
+            String response = sendCommand(command);
+            if (response == null) {
+                response = "(sin respuesta: timeout o error de red)";
+            }
+            final String finalResponse = response;
+
+            SwingUtilities.invokeLater(() -> {
+                if (actionHistoryTableModel != null) {
+                    actionHistoryTableModel.insertRow(0, new Object[]{
+                            LocalDateTime.now().format(TS_FMT),
+                            command,
+                            finalResponse
+                    });
+                    trimTableRows(actionHistoryTableModel, 120);
+                }
+                actionCommandRunning = false;
+                updateActionButtons();
+            });
+        }, "action-command");
+
+        actionThread.setDaemon(true);
+        actionThread.start();
+    }
+
     private void onSuperviseSelectedSensor() {
         String sensorId = getSelectedSensorId();
         if (sensorId == null) {
@@ -1463,6 +1609,19 @@ public class OperadorClient extends JFrame {
         toggleGlobalSupervisionButton.setText(globalMode ? "Pausar supervision" : "Supervisar todos");
         clearHistoryButton.setEnabled(measurementsTableModel.getRowCount() > 0);
         clearAlertsButton.setEnabled(alertsTableModel.getRowCount() > 0);
+
+        if (actionGetSensorsButton != null) {
+            actionGetSensorsButton.setEnabled(connected && !actionCommandRunning);
+        }
+        if (actionPingButton != null) {
+            actionPingButton.setEnabled(connected && !actionCommandRunning);
+        }
+        if (actionGetLastButton != null) {
+            actionGetLastButton.setEnabled(connected && !actionCommandRunning);
+        }
+        if (actionSensorIdField != null) {
+            actionSensorIdField.setEnabled(connected && !actionCommandRunning);
+        }
     }
 
     private boolean isSelectedSensorIndividuallySupervised(String sensorId) {

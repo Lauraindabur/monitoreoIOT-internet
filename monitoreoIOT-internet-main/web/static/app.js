@@ -19,6 +19,11 @@ if (dashboardRoot) {
     const snapshotTime = document.getElementById("snapshot-time");
     const connectionPill = document.getElementById("connection-pill");
     const alertsPill = document.getElementById("alerts-pill");
+    const consoleForm = document.getElementById("iot-console-form");
+    const commandSelect = document.getElementById("iot-command-select");
+    const commandSensorId = document.getElementById("iot-sensor-id");
+    const consoleOutput = document.getElementById("iot-console-output");
+    const consoleClear = document.getElementById("iot-console-clear");
 
     document.querySelectorAll("[data-action]").forEach((button) => {
         button.addEventListener("click", async () => {
@@ -45,6 +50,29 @@ if (dashboardRoot) {
         renderSelectedSensor();
         highlightSelectedRow();
     });
+
+    if (consoleForm) {
+        consoleForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await submitConsoleCommand();
+        });
+    }
+
+    if (commandSelect) {
+        commandSelect.addEventListener("change", () => {
+            const selected = commandSelect.value;
+            const needsSensor = selected === "GET_LAST";
+            commandSensorId.disabled = !needsSensor;
+            commandSensorId.placeholder = needsSensor ? "temp_01" : "No aplica";
+        });
+        commandSelect.dispatchEvent(new Event("change"));
+    }
+
+    if (consoleClear) {
+        consoleClear.addEventListener("click", () => {
+            consoleOutput.innerHTML = `<div class="empty-state">Aun no has enviado comandos.</div>`;
+        });
+    }
 
     bootstrap();
 
@@ -130,6 +158,82 @@ if (dashboardRoot) {
         renderStatus(state.snapshot.system);
         renderSelectedSensor();
         renderToolbar(state.snapshot);
+    }
+
+    async function submitConsoleCommand() {
+        if (!commandSelect) {
+            return;
+        }
+
+        const command = commandSelect.value;
+        const sensorId = commandSensorId?.value?.trim() || "";
+        if (command === "GET_LAST" && !sensorId) {
+            renderBanner({ level: "warning", message: "Debes indicar un sensor_id para GET_LAST." });
+            return;
+        }
+
+        appendConsoleLine({
+            direction: "TX",
+            text: command === "GET_LAST" ? `GET_LAST ${sensorId}` : command,
+        });
+
+        try {
+            const response = await fetch("/api/commands", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ command, sensor_id: sensorId }),
+            });
+
+            if (response.status === 401) {
+                window.location.assign("/login");
+                return;
+            }
+            const data = await response.json();
+            if (!response.ok) {
+                appendConsoleLine({
+                    direction: "RX",
+                    text: `ERROR ${data.error || response.status}`,
+                    meta: "Fallo HTTP",
+                });
+                return;
+            }
+
+            const item = data.transcript?.[0];
+            appendConsoleLine({
+                direction: "RX",
+                text: item?.response || "(sin respuesta)",
+                meta: `IoT ${data.iot_host}:${data.iot_port}`,
+            });
+        } catch (error) {
+            appendConsoleLine({
+                direction: "RX",
+                text: error instanceof Error ? error.message : "Error desconocido",
+                meta: "Excepcion",
+            });
+        }
+    }
+
+    function appendConsoleLine({ direction, text, meta }) {
+        if (!consoleOutput) {
+            return;
+        }
+
+        if (consoleOutput.querySelector(".empty-state")) {
+            consoleOutput.innerHTML = "";
+        }
+
+        const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        const metaText = meta ? `${timestamp} - ${meta}` : timestamp;
+        const line = document.createElement("div");
+        line.className = "console-line";
+        line.innerHTML = `
+            <div class="console-meta">${escapeHtml(direction)} - ${escapeHtml(metaText)}</div>
+            <code>${escapeHtml(text)}</code>
+        `;
+        consoleOutput.prepend(line);
     }
 
     function renderToolbar(snapshot) {

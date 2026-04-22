@@ -420,6 +420,74 @@ body {
     background: rgba(255, 107, 102, 0.12);
 }
 
+.console-panel {
+    position: relative;
+}
+
+.console-form {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto auto;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 16px;
+}
+
+.console-field {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.console-field select,
+.console-field input {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(5, 18, 29, 0.72);
+    color: var(--text);
+    padding: 0 14px;
+}
+
+.console-field select:focus,
+.console-field input:focus {
+    outline: 2px solid rgba(113, 214, 255, 0.45);
+    outline-offset: 2px;
+}
+
+.console-output {
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.22);
+    min-height: 140px;
+    display: grid;
+    gap: 10px;
+}
+
+.console-line {
+    display: grid;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.console-line code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.86rem;
+    color: #d7f3ff;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.console-line .console-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
 .hidden {
     display: none;
 }
@@ -591,6 +659,10 @@ body {
 
     .detail-grid,
     .status-list {
+        grid-template-columns: 1fr;
+    }
+
+    .console-form {
         grid-template-columns: 1fr;
     }
 }

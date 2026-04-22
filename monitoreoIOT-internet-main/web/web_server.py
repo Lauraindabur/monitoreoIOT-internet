@@ -198,6 +198,8 @@ class AppContext:
     dashboard_service: DashboardService
     auth_host: str
     auth_port: int
+    iot_host: str
+    iot_port: int
 
 
 class AppHTTPServer(ThreadingHTTPServer):
@@ -255,6 +257,8 @@ class WebHandler(BaseHTTPRequestHandler):
             self._handle_action_refresh()
         elif path == "/api/actions/acknowledge-alerts":
             self._handle_action_acknowledge_alerts()
+        elif path == "/api/commands":
+            self._handle_api_commands()
         else:
             self._send_html(
                 405,
@@ -363,6 +367,49 @@ class WebHandler(BaseHTTPRequestHandler):
             return
         self._send_json(200, self.server.context.dashboard_service.acknowledge_alerts())
 
+    def _handle_api_commands(self) -> None:
+        if not self._require_session():
+            return
+
+        content_length = int(self.headers.get("Content-Length", "0"))
+        raw_body = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
+        try:
+            payload = json.loads(raw_body) if raw_body else {}
+        except json.JSONDecodeError:
+            self._send_json(400, {"error": "JSON invalido"})
+            return
+
+        command = str(payload.get("command", "")).strip().upper()
+        sensor_id = str(payload.get("sensor_id", "")).strip()
+
+        allowed = {"PING", "GET_SENSORS", "GET_LAST"}
+        if command not in allowed:
+            self._send_json(400, {"error": "Comando no permitido"})
+            return
+
+        lines: list[str] = []
+        if command == "PING":
+            lines = ["PING"]
+        elif command == "GET_SENSORS":
+            lines = ["GET_SENSORS"]
+        elif command == "GET_LAST":
+            if not sensor_id:
+                self._send_json(400, {"error": "sensor_id es requerido para GET_LAST"})
+                return
+            lines = [f"GET_LAST {sensor_id}"]
+
+        try:
+            result = run_iot_commands(
+                iot_host=self.server.context.iot_host,
+                iot_port=self.server.context.iot_port,
+                commands=lines,
+            )
+        except Exception as exc:
+            self._send_json(502, {"error": str(exc)})
+            return
+
+        self._send_json(200, result)
+
     def _handle_static(self, path: str) -> None:
         relative = path[len("/static/") :]
         file_path = (STATIC_DIR / relative).resolve()
@@ -443,6 +490,8 @@ def run_server(
         dashboard_service=dashboard_service,
         auth_host=auth_host,
         auth_port=auth_port,
+        iot_host=iot_host,
+        iot_port=iot_port,
     )
 
     server = AppHTTPServer((web_host, web_port), WebHandler, context)
@@ -459,6 +508,26 @@ def run_server(
         dashboard_service.stop()
 
     return 0
+
+
+def run_iot_commands(*, iot_host: str, iot_port: int, commands: list[str]) -> dict:
+    client = IotClient(iot_host, iot_port, timeout=8.0, log_fn=_log)
+    sock, reader = client.open_operator_connection()
+    transcript: list[dict] = []
+    try:
+        for line in commands:
+            client._send_line(sock, line)
+            response = client._read_line(reader)
+            transcript.append({"command": line, "response": response})
+    finally:
+        client._close_connection(sock, reader)
+
+    return {
+        "iot_host": iot_host,
+        "iot_port": iot_port,
+        "transcript": transcript,
+        "count": len(transcript),
+    }
 
 
 def build_parser() -> argparse.ArgumentParser:

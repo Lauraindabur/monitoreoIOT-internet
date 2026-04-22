@@ -32,6 +32,35 @@
 
 <div class="banner hidden" id="dashboard-banner"></div>
 
+<section class="panel panel-wide console-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Consola operativa</p>
+            <h2>Enviar comandos al servidor IoT</h2>
+        </div>
+        <span class="panel-meta">Ejecuta PING, GET_SENSORS o GET_LAST</span>
+    </div>
+    <form class="console-form" id="iot-console-form">
+        <label class="console-field">
+            <span>Comando</span>
+            <select id="iot-command-select">
+                <option value="GET_SENSORS">GET_SENSORS</option>
+                <option value="PING">PING</option>
+                <option value="GET_LAST">GET_LAST &lt;sensor_id&gt;</option>
+            </select>
+        </label>
+        <label class="console-field">
+            <span>sensor_id (solo para GET_LAST)</span>
+            <input type="text" id="iot-sensor-id" placeholder="temp_01" autocomplete="off">
+        </label>
+        <button type="submit" class="action-button primary">Enviar</button>
+        <button type="button" class="action-button" id="iot-console-clear">Limpiar</button>
+    </form>
+    <div class="console-output" id="iot-console-output">
+        <div class="empty-state">Aun no has enviado comandos.</div>
+    </div>
+</section>
+
 <section class="stats-grid" id="stats-grid"></section>
 
 <section class="dashboard-grid">
