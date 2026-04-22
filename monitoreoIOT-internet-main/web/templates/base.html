@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <link rel="stylesheet" href="/static/app.css">
+    ${head_extras}
+</head>
+<body class="${body_class}">
+    <div class="shell-backdrop"></div>
+    <div class="shell">
+        <header class="topbar">
+            <a class="brand" href="/">
+                <span class="brand-mark">IOT</span>
+                <span class="brand-copy">
+                    <strong>Centro de monitoreo</strong>
+                    <small>Sensores activos, alertas y supervision</small>
+                </span>
+            </a>
+            <nav class="topbar-actions">
+                ${nav_html}
+            </nav>
+        </header>
+        <main class="page ${page_class}">
+            ${content_html}
+        </main>
+        <footer class="footer">
+            <span>Sistema distribuido de monitoreo IoT</span>
+            <span>Servidor HTTP basico con autenticacion externa</span>
+        </footer>
+    </div>
+    ${script_tag}
+</body>
+</html>

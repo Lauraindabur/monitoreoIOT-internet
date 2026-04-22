@@ -1,0 +1,33 @@
+<section class="login-shell">
+    <div class="login-copy">
+        <p class="eyebrow">Acceso web</p>
+        <h1>Ingresa al centro de monitoreo</h1>
+        <p>
+            Los usuarios no viven en este servidor. El login se valida contra un servicio de autenticacion externo
+            y la interfaz consulta al sistema IoT usando resolucion de nombres.
+        </p>
+        <ul class="login-points">
+            <li>Visualiza sensores activos</li>
+            <li>Consulta mediciones recientes</li>
+            <li>Recibe alertas del sistema</li>
+        </ul>
+    </div>
+
+    <div class="login-panel">
+        <h2>Iniciar sesion</h2>
+        ${info_html}
+        ${error_html}
+        <form method="POST" action="/login" class="login-form">
+            <label>
+                <span>Usuario</span>
+                <input type="text" name="username" placeholder="operador1" required autofocus>
+            </label>
+            <label>
+                <span>Contrasena</span>
+                <input type="password" name="password" placeholder="oper123" required>
+            </label>
+            <button type="submit" class="action-button primary login-submit">Ingresar</button>
+        </form>
+        <p class="login-helper">Usuarios de prueba: admin, operador1, operador2, invitado.</p>
+    </div>
+</section>

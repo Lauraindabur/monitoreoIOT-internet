@@ -1,0 +1,127 @@
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Supervision operativa</p>
+        <h1>Visualizacion web de sensores activos</h1>
+        <p class="hero-copy">
+            La interfaz consulta el servidor IoT por nombre de host, conserva la sesion con autenticacion externa
+            y sigue operando aunque exista un error temporal de red.
+        </p>
+    </div>
+    <div class="hero-pills">
+        <span class="pill" id="connection-pill">Conectando...</span>
+        <span class="pill pill-soft" id="alerts-pill">Esperando alertas</span>
+    </div>
+</section>
+
+<section class="toolbar-card">
+    <div class="toolbar-copy">
+        <h2>Acciones de supervision</h2>
+        <p>Actualiza el estado del sistema, revisa alertas y enfoca un sensor para ver su detalle.</p>
+    </div>
+    <div class="toolbar-actions">
+        <button type="button" class="action-button primary" data-action="refresh">Actualizar ahora</button>
+        <button type="button" class="action-button" data-action="acknowledge-alerts">Marcar alertas revisadas</button>
+        <label class="sensor-focus">
+            <span>Sensor enfocado</span>
+            <select id="sensor-focus-select">
+                <option value="">Seleccione un sensor</option>
+            </select>
+        </label>
+    </div>
+</section>
+
+<div class="banner hidden" id="dashboard-banner"></div>
+
+<section class="stats-grid" id="stats-grid"></section>
+
+<section class="dashboard-grid">
+    <article class="panel panel-wide">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Vista principal</p>
+                <h2>Sensores activos</h2>
+            </div>
+            <span class="panel-meta" id="snapshot-time">Sin datos aun</span>
+        </div>
+        <div class="table-shell">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Tipo</th>
+                        <th>Ultima medicion</th>
+                        <th>Timestamp</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="sensors-body">
+                    <tr>
+                        <td colspan="5" class="empty-cell">Esperando datos del servidor IoT...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Sensor seleccionado</p>
+                <h2>Detalle operativo</h2>
+            </div>
+        </div>
+        <div id="sensor-detail" class="detail-card detail-empty">
+            Selecciona un sensor para inspeccionar su ultima medicion y su estado operativo.
+        </div>
+    </article>
+
+    <article class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Eventos del sistema</p>
+                <h2>Alertas generadas</h2>
+            </div>
+        </div>
+        <div id="alerts-list" class="stack-list empty-state">
+            Aun no se han recibido alertas desde el servidor.
+        </div>
+    </article>
+
+    <article class="panel panel-wide">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Consulta operativa</p>
+                <h2>Mediciones recientes</h2>
+            </div>
+            <span class="panel-meta">Ultimos valores consultados via GET_LAST</span>
+        </div>
+        <div class="table-shell">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Timestamp</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="measurements-body">
+                    <tr>
+                        <td colspan="5" class="empty-cell">Sin mediciones recientes disponibles.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Salud del sistema</p>
+                <h2>Estado general</h2>
+            </div>
+        </div>
+        <dl class="status-list" id="status-list"></dl>
+    </article>
+</section>

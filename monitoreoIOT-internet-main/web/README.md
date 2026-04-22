@@ -7,6 +7,13 @@ Este directorio contiene **dos servicios Python** que forman la capa web del sis
 | `auth_service.py` | `8081` | Servicio externo de autenticación (validación de usuarios y roles) |
 | `web_server.py` | `8080` | Servidor HTTP con dashboard web del sistema IoT |
 
+Estructura modular nueva del dashboard:
+
+- `dashboard_service.py`: cliente TCP, consulta de sensores, mediciones y stream de alertas.
+- `templates/`: HTML base, dashboard y login.
+- `static/app.css`: estilos de la interfaz.
+- `static/app.js`: render del dashboard, polling y acciones de supervision.
+
 ---
 
 ## Requisitos
