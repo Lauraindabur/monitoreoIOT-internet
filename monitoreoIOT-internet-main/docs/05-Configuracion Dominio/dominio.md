@@ -10,9 +10,12 @@ Para cumplir con el requisito de resolución de nombres, el sistema fue configur
 
 Se utilizó un dominio gratuito proporcionado por DuckDNS:
 
-mymonitoriot.duckdns.org
+**mymonitoriot.duckdns.org**
 
 Este dominio actúa como un alias que apunta a la dirección IP pública de la instancia EC2.
+
+
+<img width="1942" height="1240" alt="image" src="https://github.com/user-attachments/assets/8dcc3ce7-342e-4e02-8cbe-8510cbc4ed4d" />
 
 ---
 
