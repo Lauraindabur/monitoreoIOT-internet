@@ -283,7 +283,7 @@ if (dashboardRoot) {
         const cards = [
             { label: "Sensores activos", value: metrics.sensor_count },
             { label: "Alertas pendientes", value: metrics.alert_count },
-            { label: "Mediciones recientes", value: metrics.measurement_count },
+            { label: "Mediciones capturadas", value: metrics.total_measurement_count ?? metrics.measurement_count },
             { label: "Sensores criticos", value: metrics.critical_count },
             { label: "Sensores en atencion", value: metrics.warning_count },
         ];

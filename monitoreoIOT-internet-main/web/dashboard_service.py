@@ -386,6 +386,7 @@ class DashboardService:
         self._refresh_interval = refresh_interval
         self._measurements: deque[dict] = deque(maxlen=max_measurements)
         self._measurement_stamps: dict[str, str] = {}
+        self._total_measurement_count = 0
         self._log = log_fn or (lambda _level, _message: None)
         self._data_lock = threading.Lock()
         self._refresh_lock = threading.Lock()
@@ -440,6 +441,7 @@ class DashboardService:
         with self._data_lock:
             sensors = deepcopy(self._sensors)
             measurements = list(self._measurements)
+            total_measurement_count = self._total_measurement_count
             last_snapshot_at = self._last_snapshot_at
             last_success_at = self._last_success_at
             last_error = self._last_error
@@ -480,6 +482,8 @@ class DashboardService:
                 "warning_count": warning_count,
                 "idle_count": idle_count,
                 "measurement_count": len(measurements),
+                "recent_measurement_count": len(measurements),
+                "total_measurement_count": total_measurement_count,
                 "alert_count": len(alert_state["alerts"]),
                 "by_type": counts_by_type,
             },
@@ -525,6 +529,7 @@ class DashboardService:
                     continue
 
                 self._measurement_stamps[sensor["id"]] = timestamp
+                self._total_measurement_count += 1
                 self._measurements.appendleft(
                     {
                         "sensor_id": sensor["id"],
