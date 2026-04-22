@@ -290,7 +290,7 @@ Internet
 | Interpretar cabeceras HTTP | Content-Length, Content-Type, Cookie | check |
 | Manejar GET | GET /, /login, /api/sensors, /api/status | check |
 | Códigos de estado HTTP | 200, 302, 400, 401, 404 | check |
-| Servicio externo de autenticación | `auth_service.py` separado | ✅ |
-| Usuarios NO en el servidor IoT | auth_service.py es proceso independiente | ✅ |
-| Sin IPs hardcodeadas | DNS via `InetAddress` (Java) y `getaddrinfo` (Python) | ✅ |
-| Manejo de errores de red | Try/catch en todos los paths de red | ✅ |
+| Servicio externo de autenticación | `auth_service.py` separado | check |
+| Usuarios NO en el servidor IoT | auth_service.py es proceso independiente | check |
+| Sin IPs hardcodeadas | DNS via `InetAddress` (Java) y `getaddrinfo` (Python) | check |
+| Manejo de errores de red | Try/catch en todos los paths de red | check |
