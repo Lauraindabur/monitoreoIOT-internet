@@ -1,0 +1,19 @@
+[2026-04-14 09:45:53] [INFO] Servidor iniciado en puerto 9000
+[2026-04-14 09:46:52] [INFO] Cliente conectado ip=127.0.0.1 puerto=51112
+[2026-04-14 09:47:13] [INFO] Cliente desconectado ip=127.0.0.1 puerto=51112 rol=anonimo
+[2026-04-14 09:47:23] [INFO] Cliente conectado ip=127.0.0.1 puerto=37668
+[2026-04-14 09:47:53] [INFO] REQ ip=127.0.0.1 puerto=37668 msg="PING"
+[2026-04-14 09:47:53] [INFO] RES ip=127.0.0.1 puerto=37668 msg="OK PONG"
+[2026-04-14 09:48:20] [INFO] REQ ip=127.0.0.1 puerto=37668 msg="REGISTER OPERATOR op_1"
+[2026-04-14 09:48:20] [INFO] RES ip=127.0.0.1 puerto=37668 msg="OK REGISTERED OPERATOR op_1"
+[2026-04-14 09:48:33] [INFO] Cliente conectado ip=127.0.0.1 puerto=48942
+[2026-04-14 09:48:46] [INFO] REQ ip=127.0.0.1 puerto=48942 msg="REGISTER SENSOR temp_01 temperatura"
+[2026-04-14 09:48:46] [INFO] RES ip=127.0.0.1 puerto=48942 msg="OK REGISTERED SENSOR temp_01"
+[2026-04-14 09:48:51] [INFO] REQ ip=127.0.0.1 puerto=48942 msg="DATA temp_01 60"
+[2026-04-14 09:48:51] [INFO] RES ip=127.0.0.1 puerto=48942 msg="OK DATA_RECEIVED temp_01"
+[2026-04-14 09:48:51] [INFO] ALERT enviada a operador=op_1 socket=6
+[2026-04-14 09:48:52] [INFO] Timeout de inactividad ip=127.0.0.1 puerto=37668
+[2026-04-14 09:48:52] [INFO] Cliente desconectado ip=127.0.0.1 puerto=37668 rol=operador:op_1
+[2026-04-14 09:49:23] [INFO] Timeout de inactividad ip=127.0.0.1 puerto=48942
+[2026-04-14 09:49:23] [INFO] Cliente desconectado ip=127.0.0.1 puerto=48942 rol=sensor:temp_01
+[2026-04-14 09:49:56] [INFO] Servidor detenido de forma controlada
