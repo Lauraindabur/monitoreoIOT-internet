@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/server.dir/src/main.cpp.o CMakeFiles/server.dir/src/server.cpp.o CMakeFiles/server.dir/src/logger.cpp.o CMakeFiles/server.dir/src/protocol.cpp.o -o server 
