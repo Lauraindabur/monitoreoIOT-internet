@@ -72,6 +72,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=_env_float("IOT_SENSOR_IO_TIMEOUT", 10.0),
         help="Timeout de lectura/escritura en segundos.",
     )
+    parser.add_argument(
+        "--only",
+        nargs="+",
+        metavar="SENSOR_ID",
+        help=(
+            "Ejecuta solo los sensores indicados por ID (por ejemplo: temp_01 hum_01). "
+            "Si no se indica, se ejecutan todos."
+        ),
+    )
+    parser.add_argument(
+        "--exclude",
+        nargs="+",
+        metavar="SENSOR_ID",
+        help="Excluye sensores por ID (por ejemplo: cons_01).",
+    )
     return parser
 
 
@@ -81,7 +96,30 @@ def main() -> int:
     threads: list[threading.Thread] = []
     sensors = []
 
+    if args.only and args.exclude:
+        raise SystemExit("ERROR: use solo --only o --exclude, no ambos.")
+
+    known_ids = {sensor_id for sensor_id, _sensor_type, _interval in DEFAULT_SENSORS}
+
+    selected_ids: set[str] | None = None
+    if args.only:
+        unknown = [sid for sid in args.only if sid not in known_ids]
+        if unknown:
+            raise SystemExit(f"ERROR: IDs desconocidos en --only: {', '.join(unknown)}")
+        selected_ids = set(args.only)
+
+    excluded_ids: set[str] = set()
+    if args.exclude:
+        unknown = [sid for sid in args.exclude if sid not in known_ids]
+        if unknown:
+            raise SystemExit(f"ERROR: IDs desconocidos en --exclude: {', '.join(unknown)}")
+        excluded_ids = set(args.exclude)
+
     for sensor_id, sensor_type, interval in DEFAULT_SENSORS:
+        if selected_ids is not None and sensor_id not in selected_ids:
+            continue
+        if sensor_id in excluded_ids:
+            continue
         config = SensorConfig(
             host=args.host,
             port=args.port,
@@ -119,4 +157,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

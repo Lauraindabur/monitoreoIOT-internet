@@ -38,6 +38,18 @@ Para levantar los cinco sensores:
 python -m sensor.run_many --host localhost --port 9000
 ```
 
+Para levantar solo algunos (ejemplo: 4 en AWS y dejar `cons_01` para correrlo local):
+
+```bash
+python -m sensor.run_many --host mymonitoriot.duckdns.org --port 9000 --exclude cons_01
+```
+
+Y en local:
+
+```bash
+python -m sensor.run_sensor consumo --host mymonitoriot.duckdns.org --port 9000 --sensor-id cons_01
+```
+
 ## Variables de entorno soportadas
 
 - `IOT_SERVER_HOST`
@@ -59,4 +71,3 @@ python -m sensor.run_many --host localhost --port 9000
 - `consumo`
 
 Cada sensor resuelve el hostname con `socket.getaddrinfo`, se registra al conectar y reintenta automaticamente si el socket se cae o el servidor deja de responder.
-
